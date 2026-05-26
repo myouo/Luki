@@ -1,8 +1,8 @@
 use crate::models::{
-    BulkImportResult, ContinueItem, ImportCandidate, LaunchProfile, LaunchReceipt, LibraryItem,
-    LibraryPage, LibraryRoot, MonthStats, MutationResult, NoteItem, OperationItem, PathHealthIssue,
-    PathHealthReport, PlaySession, SaveProfile, SaveSnapshot, ScanJob, SnapshotInfo, TimelineEvent,
-    TodayDesk, UndoResult, WorkDetail,
+    BulkImportResult, ContinueItem, DataLocations, ImportCandidate, LaunchProfile, LaunchReceipt,
+    LibraryItem, LibraryPage, LibraryRoot, MonthStats, MutationResult, NoteItem, OperationItem,
+    PathHealthIssue, PathHealthReport, PlaySession, SaveProfile, SaveSnapshot, ScanJob,
+    SnapshotInfo, TimelineEvent, TodayDesk, UndoResult, WorkDetail,
 };
 use rusqlite::{params, Connection, OptionalExtension};
 use serde_json::{json, Value};
@@ -471,6 +471,36 @@ impl Database {
             recent_items,
             last_snapshot,
         })
+    }
+
+    pub fn data_locations(&self) -> DataLocations {
+        DataLocations {
+            app_dir: self.app_dir.to_string_lossy().to_string(),
+            database_path: self
+                .app_dir
+                .join("library.db")
+                .to_string_lossy()
+                .to_string(),
+            assets_dir: self.app_dir.join("assets").to_string_lossy().to_string(),
+            database_snapshots_dir: self
+                .app_dir
+                .join("backups")
+                .join("snapshots")
+                .to_string_lossy()
+                .to_string(),
+            save_snapshots_dir: self
+                .app_dir
+                .join("saves")
+                .join("snapshots")
+                .to_string_lossy()
+                .to_string(),
+            restore_backups_dir: self
+                .app_dir
+                .join("saves")
+                .join("restore-backups")
+                .to_string_lossy()
+                .to_string(),
+        }
     }
 
     pub fn list_library_items(
@@ -3557,6 +3587,47 @@ mod tests {
         assert_eq!(
             detail.item.cover_thumbnail_path,
             Some(thumbnail_path.to_string_lossy().to_string())
+        );
+    }
+
+    #[test]
+    fn data_locations_expose_local_storage_paths() {
+        let app_dir = test_dir("data-locations");
+        let db = Database::open(app_dir.clone()).expect("open database");
+        let locations = db.data_locations();
+
+        assert_eq!(locations.app_dir, app_dir.to_string_lossy().to_string());
+        assert_eq!(
+            locations.database_path,
+            app_dir.join("library.db").to_string_lossy().to_string()
+        );
+        assert_eq!(
+            locations.assets_dir,
+            app_dir.join("assets").to_string_lossy().to_string()
+        );
+        assert_eq!(
+            locations.database_snapshots_dir,
+            app_dir
+                .join("backups")
+                .join("snapshots")
+                .to_string_lossy()
+                .to_string()
+        );
+        assert_eq!(
+            locations.save_snapshots_dir,
+            app_dir
+                .join("saves")
+                .join("snapshots")
+                .to_string_lossy()
+                .to_string()
+        );
+        assert_eq!(
+            locations.restore_backups_dir,
+            app_dir
+                .join("saves")
+                .join("restore-backups")
+                .to_string_lossy()
+                .to_string()
         );
     }
 

@@ -148,6 +148,8 @@ try {
   await waitForText(cdp, '更新默认启动方式');
   await waitForText(cdp, '创建笔记');
   await clickNav(cdp, '设置');
+  await waitForText(cdp, '数据位置');
+  await waitForText(cdp, 'SQLite 数据库');
   await waitForText(cdp, '最近');
   await clickByText(cdp, '检查路径健康');
   await waitForText(cdp, '可用安装');

@@ -55,6 +55,16 @@ pub struct SnapshotInfo {
 }
 
 #[derive(Debug, Serialize)]
+pub struct DataLocations {
+    pub app_dir: String,
+    pub database_path: String,
+    pub assets_dir: String,
+    pub database_snapshots_dir: String,
+    pub save_snapshots_dir: String,
+    pub restore_backups_dir: String,
+}
+
+#[derive(Debug, Serialize)]
 pub struct TodayDesk {
     pub continue_items: Vec<ContinueItem>,
     pub pending_import_count: i64,

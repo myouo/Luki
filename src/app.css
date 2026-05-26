@@ -801,6 +801,30 @@ nav button:hover {
   margin: 16px 0;
 }
 
+.location-list {
+  display: grid;
+  gap: 10px;
+}
+
+.location-list article {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #edf0ea;
+  border-radius: 8px;
+  background: #fbfcf8;
+  padding: 12px;
+}
+
+.location-list strong,
+.location-list span {
+  display: block;
+}
+
+.location-list span {
+  color: #626a61;
+  overflow-wrap: anywhere;
+}
+
 .operation-list,
 .task-list {
   display: grid;

@@ -1,6 +1,7 @@
 import { convertFileSrc, invoke } from '@tauri-apps/api/core';
 import type {
   BulkImportResult,
+  DataLocations,
   ImportCandidate,
   LaunchProfile,
   LibraryPage,
@@ -254,6 +255,17 @@ export const api = {
       }
     };
     return call<TodayDesk>('get_today_desk', undefined, fallback);
+  },
+
+  getDataLocations() {
+    return call<DataLocations>('get_data_locations', undefined, {
+      app_dir: '/home/user/.local/share/luki',
+      database_path: '/home/user/.local/share/luki/library.db',
+      assets_dir: '/home/user/.local/share/luki/assets',
+      database_snapshots_dir: '/home/user/.local/share/luki/backups/snapshots',
+      save_snapshots_dir: '/home/user/.local/share/luki/saves/snapshots',
+      restore_backups_dir: '/home/user/.local/share/luki/saves/restore-backups'
+    });
   },
 
   listLibraryItems(search = '', status = '', limit = 121, offset = 0) {

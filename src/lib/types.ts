@@ -54,6 +54,15 @@ export interface SnapshotInfo {
   created_at: number;
 }
 
+export interface DataLocations {
+  app_dir: string;
+  database_path: string;
+  assets_dir: string;
+  database_snapshots_dir: string;
+  save_snapshots_dir: string;
+  restore_backups_dir: string;
+}
+
 export interface TodayDesk {
   continue_items: ContinueItem[];
   pending_import_count: number;

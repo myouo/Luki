@@ -1,9 +1,9 @@
 use crate::{
     db::Database,
     models::{
-        BulkImportResult, ImportCandidate, LaunchReceipt, LibraryItem, LibraryPage, LibraryRoot,
-        MutationResult, OperationItem, PathHealthReport, PlaySession, SaveProfile, SaveSnapshot,
-        ScanJob, SnapshotInfo, TodayDesk, UndoResult, WorkDetail,
+        BulkImportResult, DataLocations, ImportCandidate, LaunchReceipt, LibraryItem, LibraryPage,
+        LibraryRoot, MutationResult, OperationItem, PathHealthReport, PlaySession, SaveProfile,
+        SaveSnapshot, ScanJob, SnapshotInfo, TodayDesk, UndoResult, WorkDetail,
     },
 };
 use std::{path::PathBuf, process::Command, sync::Mutex, thread};
@@ -17,6 +17,12 @@ pub struct AppState {
 pub fn get_today_desk(state: State<'_, AppState>) -> Result<TodayDesk, String> {
     let db = state.db.lock().map_err(|error| error.to_string())?;
     db.get_today_desk().map_err(|error| error.to_string())
+}
+
+#[tauri::command]
+pub fn get_data_locations(state: State<'_, AppState>) -> Result<DataLocations, String> {
+    let db = state.db.lock().map_err(|error| error.to_string())?;
+    Ok(db.data_locations())
 }
 
 #[tauri::command]

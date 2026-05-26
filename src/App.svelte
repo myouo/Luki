@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { api, coverSrc, formatDate, formatDuration } from './lib/api';
   import type {
+    DataLocations,
     ImportCandidate,
     LaunchReceipt,
     LibraryItem,
@@ -54,6 +55,7 @@
 
   let activeView: ViewKey = 'today';
   let today: TodayDesk | null = null;
+  let dataLocations: DataLocations | null = null;
   let library: Array<LibraryItem | null> = [];
   let libraryTotal = 0;
   let libraryLoadedPages: Record<number, boolean> = {};
@@ -120,6 +122,7 @@
     error = '';
     try {
       today = await api.getTodayDesk();
+      dataLocations = await api.getDataLocations();
       await loadLibraryPage(true);
       candidates = await api.listImportCandidates();
       libraryRoots = await api.listLibraryRoots();
@@ -1696,6 +1699,45 @@
             <p class="muted">最近快照：{today.last_snapshot.path}</p>
           {:else}
             <p class="muted">还没有快照。批量导入和迁移前会自动创建保险点，手动快照也可以随时创建。</p>
+          {/if}
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">数据位置</p>
+              <h2>本机文件夹</h2>
+            </div>
+          </div>
+          {#if dataLocations}
+            <div class="location-list">
+              <article>
+                <strong>应用数据</strong>
+                <span>{dataLocations.app_dir}</span>
+              </article>
+              <article>
+                <strong>SQLite 数据库</strong>
+                <span>{dataLocations.database_path}</span>
+              </article>
+              <article>
+                <strong>资产目录</strong>
+                <span>{dataLocations.assets_dir}</span>
+              </article>
+              <article>
+                <strong>数据库快照</strong>
+                <span>{dataLocations.database_snapshots_dir}</span>
+              </article>
+              <article>
+                <strong>存档恢复点</strong>
+                <span>{dataLocations.save_snapshots_dir}</span>
+              </article>
+              <article>
+                <strong>恢复前备份</strong>
+                <span>{dataLocations.restore_backups_dir}</span>
+              </article>
+            </div>
+          {:else}
+            <p class="muted">数据位置会在应用数据目录初始化后显示。</p>
           {/if}
         </section>
 
